@@ -1,29 +1,41 @@
 import React, { useEffect } from 'react';
+import Users from './components/Users';
+import Pagination from './components/Pagination';
 import './App.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUsersData } from './actions/userActions';
+import { fetchUsersData, changePageNumber } from './actions/userActions';
 
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchUsersData());
+    setTimeout(() => {
+      dispatch(fetchUsersData());
+    }, 2000);
   }, [dispatch]);
-  const { users } = useSelector((state) => state.userData);
-  console.log(users);
+  const { users, loading, currentPage, usersPerPage } = useSelector(
+    (state) => state.userData
+  );
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+
+  const paginate = (number) => {
+    dispatch(changePageNumber(number));
+  };
+
   return (
     <div className='App'>
-      <p>Redux</p>
-      <hr />
+      <h3>before pagination</h3>
       {users.map((user) => (
-        <div>
-          <p>Name: {user.name}</p>
-          <p>City: {user.address.city}</p>
-          <p>Suite: {user.address.suite}</p>
-          <p>Street: {user.address.street}</p>
-          <p>Company: {user.company.name}</p>
-          <hr />
-        </div>
+        <p key={user.id}>{user.name}</p>
       ))}
+      <h3>paginate</h3>
+      <Users users={currentUsers} loading={loading} />
+      <Pagination
+        usersPerPage={usersPerPage}
+        totalUsers={users.length}
+        paginate={paginate}
+      />
     </div>
   );
 }

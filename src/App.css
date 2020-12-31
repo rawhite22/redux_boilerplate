@@ -2,3 +2,17 @@ body {
   background: #1c2437;
   color: #e4ecf4;
 }
+
+.page-list {
+  display: flex;
+  list-style: none;
+}
+
+.page-list li {
+  margin-right: 10px;
+  text-decoration: none;
+}
+.page-list li a {
+  color: white;
+  text-decoration: none;
+}
